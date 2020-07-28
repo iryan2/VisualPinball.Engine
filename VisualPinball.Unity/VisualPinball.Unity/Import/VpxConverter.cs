@@ -40,7 +40,7 @@ using Player = VisualPinball.Unity.Game.Player;
 
 namespace VisualPinball.Unity.Import
 {
-	public class VpxImporter : MonoBehaviour
+	public class VpxConverter : MonoBehaviour
 	{
 		private static readonly Quaternion GlobalRotation = Quaternion.Euler(-90, 0, 0);
 		public const float GlobalScale = 0.001f;
@@ -54,7 +54,7 @@ namespace VisualPinball.Unity.Import
 		private Table _table;
 		private TableBehavior _tb;
 
-		public void Import(string fileName, Table table)
+		public void Convert(string fileName, Table table)
 		{
 			_table = table;
 
@@ -75,9 +75,9 @@ namespace VisualPinball.Unity.Import
 				}
 			}
 
-			// import
-			ImportTextures();
-			ImportGameItems();
+			// convert
+			ConvertTextures();
+			ConvertGameItems();
 
 			// set root transformation
 			go.transform.localRotation = GlobalRotation;
@@ -89,7 +89,7 @@ namespace VisualPinball.Unity.Import
 			go.AddComponent<Player>();
 		}
 
-		public static void ImportRenderObject(IRenderable item, RenderObject ro, GameObject obj, TableBehavior table)
+		public static void ConvertRenderObject(IRenderable item, RenderObject ro, GameObject obj, TableBehavior table)
 		{
 			if (ro.Mesh == null) {
 				Logger.Warn($"No mesh for object {obj.name}, skipping.");
@@ -111,20 +111,20 @@ namespace VisualPinball.Unity.Import
 			table.Patcher.ApplyPatches(item, ro, obj);
 		}
 
-		private void ImportTextures()
+		private void ConvertTextures()
 		{
 			foreach (var kvp in _table.Textures) {
 				_tb.AddTexture(kvp.Key, kvp.Value.ToUnityTexture());
 			}
 		}
 
-		private void ImportGameItems()
+		private void ConvertGameItems()
 		{
-			// import game objects
-			ImportRenderables();
+			// convert game objects
+			ConvertRenderables();
 		}
 
-		private void ImportRenderables()
+		private void ConvertRenderables()
 		{
 			foreach (var renderable in _renderObjects.Keys) {
 				var ro = _renderObjects[renderable];
@@ -133,23 +133,23 @@ namespace VisualPinball.Unity.Import
 					parent.transform.parent = gameObject.transform;
 					_parents[ro.Parent] = parent;
 				}
-				ImportRenderObjects(renderable, ro, _parents[ro.Parent]);
+				ConvertRenderObjects(renderable, ro, _parents[ro.Parent]);
 			}
 		}
 
-		private void ImportRenderObjects(IRenderable item, RenderObjectGroup rog, GameObject parent)
+		private void ConvertRenderObjects(IRenderable item, RenderObjectGroup rog, GameObject parent)
 		{
 			var obj = new GameObject(rog.Name);
 			obj.transform.parent = parent.transform;
 
 			if (rog.HasOnlyChild && !rog.ForceChild) {
-				ImportRenderObject(item, rog.RenderObjects[0], obj, _tb);
+				ConvertRenderObject(item, rog.RenderObjects[0], obj, _tb);
 			} else if (rog.HasChildren) {
 				foreach (var ro in rog.RenderObjects) {
 					var subObj = new GameObject(ro.Name);
 					subObj.transform.SetParent(obj.transform, false);
 					subObj.layer = ChildObjectsLayer;
-					ImportRenderObject(item, ro, subObj, _tb);
+					ConvertRenderObject(item, ro, subObj, _tb);
 				}
 			}
 
