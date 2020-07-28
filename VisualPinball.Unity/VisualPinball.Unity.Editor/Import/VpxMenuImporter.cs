@@ -65,7 +65,7 @@ namespace VisualPinball.Unity.Editor.Import
 
 			converter.Convert(Path.GetFileName(path), table);
 
-			//Object.DestroyImmediate(converter);
+			Object.DestroyImmediate(converter);
 
 			return rootGameObj;
 		}
