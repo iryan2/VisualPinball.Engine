@@ -108,7 +108,7 @@ namespace VisualPinball.Unity.Import
 			mr.enabled = ro.IsVisible;
 
 			// patch
-			table.Patcher.ApplyPatches(item, ro, obj);
+			table.Patcher?.ApplyPatches(item, ro, obj);
 		}
 
 		private void ConvertTextures()
@@ -133,23 +133,23 @@ namespace VisualPinball.Unity.Import
 					parent.transform.parent = gameObject.transform;
 					_parents[ro.Parent] = parent;
 				}
-				ConvertRenderObjects(renderable, ro, _parents[ro.Parent]);
+				ConvertRenderObjects(renderable, ro, _parents[ro.Parent], _tb);
 			}
 		}
 
-		private void ConvertRenderObjects(IRenderable item, RenderObjectGroup rog, GameObject parent)
+		public static GameObject ConvertRenderObjects(IRenderable item, RenderObjectGroup rog, GameObject parent, TableBehavior tb)
 		{
 			var obj = new GameObject(rog.Name);
 			obj.transform.parent = parent.transform;
 
 			if (rog.HasOnlyChild && !rog.ForceChild) {
-				ConvertRenderObject(item, rog.RenderObjects[0], obj, _tb);
+				ConvertRenderObject(item, rog.RenderObjects[0], obj, tb);
 			} else if (rog.HasChildren) {
 				foreach (var ro in rog.RenderObjects) {
 					var subObj = new GameObject(ro.Name);
 					subObj.transform.SetParent(obj.transform, false);
 					subObj.layer = ChildObjectsLayer;
-					ConvertRenderObject(item, ro, subObj, _tb);
+					ConvertRenderObject(item, ro, subObj, tb);
 				}
 			}
 
@@ -183,6 +183,7 @@ namespace VisualPinball.Unity.Import
 				}
 			}
 #endif
+			return obj;
 		}
 
 		private void MakeSerializable(GameObject go, Table table)
