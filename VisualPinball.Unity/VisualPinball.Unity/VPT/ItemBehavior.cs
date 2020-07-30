@@ -23,7 +23,7 @@ namespace VisualPinball.Unity.VPT
 		public bool IsLocked { get => data.IsLocked; set => data.IsLocked = value; }
 		public string[] UsedMaterials => (Item as IRenderable)?.UsedMaterials;
 
-		protected TableData _tableData;
+		protected Engine.VPT.Table.Table _table;
 		private TItem _item;
 
 		private readonly Logger _logger = LogManager.GetCurrentClassLogger();
@@ -131,10 +131,10 @@ namespace VisualPinball.Unity.VPT
 
 		protected virtual void Awake()
 		{
-			var rootObj = gameObject.transform.GetComponentInParent<TableBehavior>();
+			var tb = gameObject.transform.GetComponentInParent<TableBehavior>();
 			// can be null in editor, shouldn't be at runtime.
-			if (rootObj != null) {
-				_tableData = rootObj.data;
+			if (tb != null) {
+				_table = tb.Table;
 			}
 		}
 
@@ -184,6 +184,6 @@ namespace VisualPinball.Unity.VPT
 
 		protected abstract TItem GetItem();
 
-		public string Name { get { return Item.Name; } set { Item.Name = value; } }
+		public string Name { get => Item.Name; set => Item.Name = value; }
 	}
 }
