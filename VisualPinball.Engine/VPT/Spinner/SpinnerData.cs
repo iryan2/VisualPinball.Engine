@@ -30,7 +30,7 @@ namespace VisualPinball.Engine.VPT.Spinner
 		public float Rotation = 0f;
 
 		[BiffString("MATR", Pos = 13)]
-		public string Material;
+		public string Material = string.Empty;
 
 		[BiffBool("SSUP", Pos = 12)]
 		public bool ShowBracket = true;
@@ -57,10 +57,10 @@ namespace VisualPinball.Engine.VPT.Spinner
 		public bool IsVisible = true;
 
 		[BiffString("IMGF", Pos = 14)]
-		public string Image;
+		public string Image = string.Empty;
 
 		[BiffString("SURF", Pos = 15)]
-		public string Surface;
+		public string Surface = string.Empty;
 
 		[BiffBool("TMON", Pos = 3)]
 		public bool IsTimerEnabled;
@@ -73,6 +73,12 @@ namespace VisualPinball.Engine.VPT.Spinner
 		static SpinnerData()
 		{
 			Init(typeof(SpinnerData), Attributes);
+		}
+
+		public SpinnerData(string name, float x, float y)
+		{
+			Name = name;
+			Center = new Vertex2D(x, y);
 		}
 
 		public SpinnerData(BinaryReader reader, string storageName) : base(storageName)
