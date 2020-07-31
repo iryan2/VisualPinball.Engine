@@ -46,10 +46,10 @@ namespace VisualPinball.Engine.VPT.Kicker
 		public float Orientation = 0.0f;
 
 		[BiffString("MATR", Pos = 5)]
-		public string Material;
+		public string Material = string.Empty;
 
 		[BiffString("SURF", Pos = 6)]
-		public string Surface;
+		public string Surface = string.Empty;
 
 		[BiffBool("FATH", Pos = 14)]
 		public bool FallThrough = false;
@@ -71,6 +71,12 @@ namespace VisualPinball.Engine.VPT.Kicker
 		static KickerData()
 		{
 			Init(typeof(KickerData), Attributes);
+		}
+
+		public KickerData(string name, float x, float y)
+		{
+			Name = name;
+			Center = new Vertex2D(x, y);
 		}
 
 		public KickerData(BinaryReader reader, string storageName) : base(storageName)
