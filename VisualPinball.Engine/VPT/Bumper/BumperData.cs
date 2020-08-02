@@ -98,6 +98,12 @@ namespace VisualPinball.Engine.VPT.Bumper
 		[BiffInt("TMIN", Pos = 4)]
 		public int TimerInterval;
 
+		public BumperData(string name, float x, float y)
+		{
+			Name = name;
+			Center = new Vertex2D(x, y);
+		}
+
 		#region BIFF
 
 		static BumperData()
@@ -107,12 +113,6 @@ namespace VisualPinball.Engine.VPT.Bumper
 
 		public BumperData(string storageName) : base(storageName)
 		{
-		}
-
-		public BumperData(string name, float x, float y)
-		{
-			Name = name;
-			Center = new Vertex2D(x, y);
 		}
 
 		public BumperData(BinaryReader reader, string storageName) : this(storageName)

@@ -1,11 +1,9 @@
 using System.Linq;
 using NLog;
 using Unity.Entities;
-using UnityEditor;
 using UnityEngine;
 using VisualPinball.Engine.Game;
 using VisualPinball.Engine.VPT;
-using VisualPinball.Engine.VPT.Table;
 using VisualPinball.Unity.Extensions;
 using VisualPinball.Unity.Import;
 using VisualPinball.Unity.VPT.Table;
@@ -21,7 +19,7 @@ namespace VisualPinball.Unity.VPT
 
 		public TItem Item => _item ?? (_item = GetItem());
 		public bool IsLocked { get => data.IsLocked; set => data.IsLocked = value; }
-		public string[] UsedMaterials => (Item as IRenderable)?.UsedMaterials;
+		public string[] UsedMaterials => Item?.UsedMaterials;
 
 		protected Engine.VPT.Table.Table _table;
 		private TItem _item;
@@ -32,18 +30,13 @@ namespace VisualPinball.Unity.VPT
 		[HideInInspector]
 		[SerializeField]
 		private bool _meshDirty;
-		public bool MeshDirty { get { return _meshDirty; } set { _meshDirty = value; } }
+		public bool MeshDirty { get => _meshDirty; set => _meshDirty = value; }
 
-		public ItemBehavior<TItem, TData> SetItemAndData(TItem item, string gameObjectName = null)
+		public ItemBehavior<TItem, TData> SetItem(TItem item, string gameObjectName = null)
 		{
 			_item = item;
-			return SetData(item.Data, gameObjectName);
-		}
-
-		public ItemBehavior<TItem, TData> SetData(TData d, string gameObjectName = null)
-		{
-			name = gameObjectName ?? d.GetName();
-			data = d;
+			data = item.Data;
+			name = gameObjectName ?? data.GetName();
 			ItemDataChanged();
 			return this;
 		}
@@ -117,7 +110,7 @@ namespace VisualPinball.Unity.VPT
 		{
 			if (field == oldName) {
 #if UNITY_EDITOR
-				Undo.RecordObject(this, undoName);
+				UnityEditor.Undo.RecordObject(this, undoName);
 #endif
 				field = newName;
 			}
