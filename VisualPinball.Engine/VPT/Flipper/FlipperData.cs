@@ -201,6 +201,12 @@ namespace VisualPinball.Engine.VPT.Flipper
 			}
 		}
 
+		public FlipperData(string name, float x, float y) : base(StoragePrefix.GameItem)
+		{
+			Name = name;
+			Center = new Vertex2D(x, y);
+		}
+
 		#region BIFF
 
 		static FlipperData()
@@ -210,12 +216,6 @@ namespace VisualPinball.Engine.VPT.Flipper
 
 		public FlipperData(string storageName) : base(storageName)
 		{
-		}
-
-		public FlipperData(string name, float x, float y)
-		{
-			Name = name;
-			Center = new Vertex2D(x, y);
 		}
 
 		public FlipperData(BinaryReader reader, string storageName) : this(storageName)
