@@ -21,7 +21,10 @@ namespace VisualPinball.Unity.VPT
 		public bool IsLocked { get => data.IsLocked; set => data.IsLocked = value; }
 		public string[] UsedMaterials => Item?.UsedMaterials;
 
-		protected Engine.VPT.Table.Table _table;
+		private Engine.VPT.Table.Table _table;
+
+		protected Engine.VPT.Table.Table Table => _table ?? (_table = gameObject.transform.GetComponentInParent<TableBehavior>().Item);
+
 		private TItem _item;
 
 		private readonly Logger _logger = LogManager.GetCurrentClassLogger();
@@ -120,17 +123,6 @@ namespace VisualPinball.Unity.VPT
 		{
 			Item.Index = entity.Index;
 			Item.Version = entity.Version;
-		}
-
-		protected virtual void Awake()
-		{
-			var tb = gameObject.transform.GetComponentInParent<TableBehavior>();
-			// can be null in editor, shouldn't be at runtime.
-			if (tb != null) {
-				_table = tb.Table;
-			} else {
-				_logger.Warn("Could not find root table node.");
-			}
 		}
 
 		protected virtual void OnDrawGizmos()

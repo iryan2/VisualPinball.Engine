@@ -56,7 +56,7 @@ namespace VisualPinball.Unity.VPT.Table
 	[AddComponentMenu("Visual Pinball/Table")]
 	public class TableBehavior : ItemBehavior<Engine.VPT.Table.Table, TableData>
 	{
-		public Engine.VPT.Table.Table Table => Item;
+		public new Engine.VPT.Table.Table Table => Item;
 		public TextureData[] Textures => _sidecar?.textures;
 		public Patcher.Patcher.Patcher Patcher { get; internal set; }
 
@@ -72,9 +72,8 @@ namespace VisualPinball.Unity.VPT.Table
 
 		private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
-		protected override void Awake()
+		protected void Awake()
 		{
-			base.Awake();
 			EngineProvider<IPhysicsEngine>.Set(physicsEngineId);
 			EngineProvider<IPhysicsEngine>.Get().Init(this);
 			if (!string.IsNullOrEmpty(debugUiId)) {
